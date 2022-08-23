@@ -12,14 +12,17 @@ import Swap from "./components/swap/Swap";
 import GuardedRoute from "./components/utils/GuardedRoute";
 import NeedsRegistration from "./components/utils/NeedsRegistration";
 import CoinInfo from "./components/coinInfo/CoinInfo";
-import HistoryPage from "./pages/HistoryPage";
 
 ReactDOM.render(
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<Home />}></Route>
+<<<<<<< HEAD
       <Route path="/Home" element={<Home />}></Route>
       <Route path="/coinInfo/:coin" element={<CoinInfo />} />
+=======
+      <Route path="/Start" element={<Home />}></Route>
+>>>>>>> 96ef04a (﻿[#27448] Creo tabla de crypto y creo los estilos)
       <Route
         path="/Login"
         element={
@@ -56,7 +59,6 @@ ReactDOM.render(
           </GuardedRoute>
         }
       />
-      <Route path="/History" element={<HistoryPage />}></Route>
       <Route path="/LogOut" element={<LogOut />} />
     </Routes>
   </BrowserRouter>,

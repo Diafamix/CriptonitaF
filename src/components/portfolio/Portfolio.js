@@ -1,12 +1,10 @@
-import styled from 'styled-components'
-import { useEffect, useState } from 'react'
-import Sidebar from './Sidebar'
-import NavBar from "./../Navbar"
-import MiniChart from "../coinList/MiniChart"
+import styled from "styled-components";
+import { useEffect, useState } from "react";
+import Sidebar from "./Sidebar";
+import NavBar from "./../Navbar";
+import MiniChart from "../coinList/MiniChart";
 import axios from "axios";
-import { element } from "prop-types";
 import NumberFormat from "react-number-format";
-import { Navigate } from "react-router-dom";
 import LinearProgress from "@mui/material/LinearProgress";
 
 const Portfolio = () => {
@@ -29,8 +27,7 @@ const Portfolio = () => {
 
     const fetchCoins = async () => {
       await axios
-        .get(
-          "http://localhost:8080/api/portfolio/getAll", {
+        .get("http://localhost:8080/api/portfolio/getAll", {
           headers: {
             "Access-Control-Allow-Origin": "*",
           },
@@ -52,8 +49,7 @@ const Portfolio = () => {
 
     const fetchSingleCoinInfo = async (name) => {
       await axios
-        .get(
-          "http://localhost:8080/api/assets/getByName/" + name, {
+        .get("http://localhost:8080/api/assets/getByName/" + name, {
           headers: {
             "Access-Control-Allow-Origin": "*",
           },
@@ -71,7 +67,7 @@ const Portfolio = () => {
 
     getData();
   }, []);
-  
+
   return (
     <>
       <NavBar></NavBar>

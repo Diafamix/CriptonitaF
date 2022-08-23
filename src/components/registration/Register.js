@@ -11,9 +11,10 @@ import {
   Select,
 } from "antd";
 import "antd/dist/antd.css";
+import "./Register.css";
 import React, { useState } from "react";
 import Typography from "@mui/material/Typography";
-import { Navigate } from 'react-router-dom';
+import { Navigate } from "react-router-dom";
 
 const { Option } = Select;
 

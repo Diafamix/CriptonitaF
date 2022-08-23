@@ -1,4 +1,4 @@
-/* eslint-disable */ 
+/* eslint-disable */
 
 import * as React from "react";
 import "antd/dist/antd.css";
@@ -14,9 +14,9 @@ import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { alpha, styled } from "@mui/material/styles";
 import axios from "axios";
-import { Link as Link2 } from 'react-router-dom';
-import { useEffect, useState } from 'react'
-import { Navigate } from 'react-router-dom';
+import { Link as Link2 } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
 
 import {
   createTheme,
@@ -95,34 +95,32 @@ export default function SignIn() {
   const [status, setStatus] = useState([false]);
 
   const handleSubmit = (event) => {
-    event.preventDefault()
+    event.preventDefault();
 
-    let email = document.getElementById('email').value
-    let password = document.getElementById('password').value
+    let email = document.getElementById("email").value;
+    let password = document.getElementById("password").value;
 
     axios
-      .get(
-        "http://localhost:8080/api/portfolio/getAll", {   //Test if the connection is established correctly
+      .get("http://localhost:8080/api/portfolio/getAll", {
+        //Test if the connection is established correctly
         headers: {
-          'Access-Control-Allow-Origin': '*',
+          "Access-Control-Allow-Origin": "*",
         },
         auth: {
           username: email,
-          password: password
-        }
-      }
-      )
-      .then((data) => {
-        sessionStorage.setItem("username", email)
-        sessionStorage.setItem("password", password)
-        console.log("successfully")
-        setStatus(true)
+          password: password,
+        },
       })
-      .catch((e) => console.log(e)); 
+      .then((data) => {
+        sessionStorage.setItem("username", email);
+        sessionStorage.setItem("password", password);
+        console.log("successfully");
+        setStatus(true);
+      })
+      .catch((e) => console.log(e));
   };
 
-  if (status === true)
-    return (<Navigate to='/'/>)
+  if (status === true) return <Navigate to="/" />;
 
   return (
     <ThemeProvider theme={theme}>
@@ -215,7 +213,7 @@ export default function SignIn() {
                 </Link>
               </Grid>
               <Grid item>
-                <Link href="/Registrarse" variant="body2">
+                <Link href="/Register" variant="body2">
                   {"No tienes una cuenta? Registrarse"}
                 </Link>
               </Grid>

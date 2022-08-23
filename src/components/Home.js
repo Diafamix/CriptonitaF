@@ -1,7 +1,7 @@
 import React from "react";
 import Navbar from "./Navbar";
-import Skill from "./coinList/CoinList";
 import Banner from "./Banner";
+import Skill from "./coinList/CoinList";
 
 function Home() {
   return (

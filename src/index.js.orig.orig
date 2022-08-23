@@ -11,8 +11,10 @@ import LogOut from "./components/registration/LogOut";
 import Swap from "./components/swap/Swap";
 import GuardedRoute from "./components/utils/GuardedRoute";
 import NeedsRegistration from "./components/utils/NeedsRegistration";
+<<<<<<< HEAD
 import CoinInfo from "./components/coinInfo/CoinInfo";
-import HistoryPage from "./pages/HistoryPage";
+=======
+>>>>>>> 98ae7d1 ([#27448] Borro todos los complementos por fallos de compatibilidad e implemento gráfica enlazada con binance api que se actualiza en tiempo real)
 
 ReactDOM.render(
   <BrowserRouter>
@@ -56,7 +58,6 @@ ReactDOM.render(
           </GuardedRoute>
         }
       />
-      <Route path="/History" element={<HistoryPage />}></Route>
       <Route path="/LogOut" element={<LogOut />} />
     </Routes>
   </BrowserRouter>,
