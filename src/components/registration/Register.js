@@ -1,20 +1,8 @@
-import {
-  AutoComplete,
-  Button,
-  Cascader,
-  Checkbox,
-  Col,
-  Form,
-  Input,
-  InputNumber,
-  Row,
-  Select,
-} from "antd";
+import { Button, Checkbox, Form, Input, Select } from "antd";
 import "antd/dist/antd.css";
 import "./Register.css";
 import React, { useState } from "react";
 import Typography from "@mui/material/Typography";
-import { Navigate } from "react-router-dom";
 
 const { Option } = Select;
 
@@ -233,9 +221,9 @@ const Register = () => {
           ]}
         >
           <Select placeholder="Seleccione su género">
-            <Option value="Hombre">Hombre</Option>
-            <Option value="Mujer">Mujer</Option>
-            <Option value="Otros">Otros</Option>
+            <Option value="Hombre">Male</Option>
+            <Option value="Mujer">Female</Option>
+            <Option value="Otros">Others</Option>
           </Select>
         </Form.Item>
 
@@ -258,7 +246,7 @@ const Register = () => {
         </Form.Item>
         <Form.Item {...tailFormItemLayout}>
           <Button type="primary" htmlType="submit">
-            Registrar
+            Register
           </Button>
         </Form.Item>
       </Form>

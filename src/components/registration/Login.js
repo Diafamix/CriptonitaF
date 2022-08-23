@@ -101,17 +101,15 @@ export default function SignIn() {
     let password = document.getElementById("password").value;
 
     axios
-      .get("http://localhost:8080/api/portfolio/getAll", {
+      .get("http://localhost:8080/authentication/login?username=" + email + "&password=" + password, {
         //Test if the connection is established correctly
         headers: {
           "Access-Control-Allow-Origin": "*",
         },
-        auth: {
-          username: email,
-          password: password,
-        },
       })
       .then((data) => {
+        console.log(data.data)
+        if (!data.data.result === "true") return;
         sessionStorage.setItem("username", email);
         sessionStorage.setItem("password", password);
         console.log("successfully");
@@ -119,6 +117,10 @@ export default function SignIn() {
       })
       .catch((e) => console.log(e));
   };
+
+  if (sessionStorage.getItem("username") !== null) {  // Already logger in
+    return <Navigate to="/"></Navigate>
+}
 
   if (status === true) return <Navigate to="/" />;
 

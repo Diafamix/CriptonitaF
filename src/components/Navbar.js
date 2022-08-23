@@ -42,15 +42,15 @@ const ResponsiveAppBar = () => {
     setAnchorEl(event.currentTarget);
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
-
   const navigate = useNavigate();
 
   const HandleLogOut = () => {
     console.log("wooooo");
     navigate("/LogOut");
+  };
+
+  const handleClose = () => {
+    navigate("/AccountPage");
   };
 
   return (

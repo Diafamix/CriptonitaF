@@ -5,7 +5,7 @@ import "./index.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Home from "./components/Home";
 import Login from "./components/registration/Login";
-import Register from "./components/registration/Register";
+import RegisterPage from "./pages/RegisterPage";
 import Portfolio from "./components/portfolio/Portfolio";
 import LogOut from "./components/registration/LogOut";
 import Swap from "./components/swap/Swap";
@@ -13,6 +13,8 @@ import GuardedRoute from "./components/utils/GuardedRoute";
 import NeedsRegistration from "./components/utils/NeedsRegistration";
 import CoinInfo from "./components/coinInfo/CoinInfo";
 import HistoryPage from "./pages/HistoryPage";
+import AccountPage from "./pages/AccountPage";
+import CustomersPage from "./pages/CustomersPage";
 
 ReactDOM.render(
   <BrowserRouter>
@@ -34,7 +36,7 @@ ReactDOM.render(
         element={
           <GuardedRoute condition={NeedsRegistration()}>
             {" "}
-            <Register />{" "}
+            <RegisterPage />{" "}
           </GuardedRoute>
         }
       />
@@ -58,6 +60,8 @@ ReactDOM.render(
       />
       <Route path="/History" element={<HistoryPage />}></Route>
       <Route path="/LogOut" element={<LogOut />} />
+      <Route path="/AccountPage" element={<AccountPage />} />
+      <Route path="/CustomersPage" element={<CustomersPage />} />
     </Routes>
   </BrowserRouter>,
   document.getElementById("root")

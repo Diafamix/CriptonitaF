@@ -10,6 +10,7 @@ import CoinSelectorPopUp from "./CoinSelector"
 import Typography from '@mui/material/Typography';
 import axios from "axios";
 import { FixedSizeList } from 'react-window';
+import { Navigate } from "react-router-dom"
 
 const Swap = () => {
 
@@ -68,8 +69,8 @@ const Swap = () => {
 
         axios.get("http://localhost:8080/api/tools/convert", {
             headers: { 'Access-Control-Allow-Origin': '*' },
-            auth: { username: 'sergio.bernal', password: '1234' },
-            params: { from: firstCoin.name, to: secondCoin.name, amount: quantity }
+            auth: { username: sessionStorage.getItem("username"), password: sessionStorage.getItem("password") },
+            params: { from: firstCoin.id, to: secondCoin.id, amount: quantity }
         }).then((response) => {
             console.log(response)
             setValue({ loading: false, value: response.data.data.price.toFixed(10) })
@@ -89,13 +90,32 @@ const Swap = () => {
 
         return (
             <SelectedCoinButton onClick={e => handleSelectButton(e, who)}>
-                <img src={innerCoin.logo} alt={innerCoin.id} style={{ height: 25, width: 25 }} />
+                <img src={innerCoin.marketData.image} alt={innerCoin.id} style={{ height: 25, width: 25 }} />
                 <TypoMargins>
                     <Typography variant="body1" display="block" style={{ color: 'white' }}>{innerCoin.symbol}</Typography>
                 </TypoMargins>
                 <AiOutlineDown size={16} />
             </SelectedCoinButton>
         )
+    }
+
+    const swapNowHandler = () => {
+        if ((firstCoin === null || firstCoin === undefined) || (secondCoin === null || secondCoin === undefined)) return;
+
+        axios.post("http://localhost:8080/api/swap/trade", {
+            headers: { 'Access-Control-Allow-Origin': '*' },
+            auth: { username: sessionStorage.getItem("username"), password: sessionStorage.getItem("password") },
+            params: { from: firstCoin.id, to: secondCoin.id, amount: quantity }
+        })
+        .then((data) => {
+           setFirstCoin(null)
+           secondCoin(null)
+           setQuantity(0) 
+        });
+    }
+
+    if (sessionStorage.getItem("username") === null) {
+        return <Navigate to="/"></Navigate>
     }
 
     return (
@@ -129,7 +149,7 @@ const Swap = () => {
                                             {selectCoinFunction('second')}
                                         </SwapsInnerContainer>
                                     </SecondSwap>
-                                    <SwapButton>
+                                    <SwapButton onClick={swapNowHandler}>
                                         Swap Now
                                     </SwapButton>
                                 </InnerSwapContainer>

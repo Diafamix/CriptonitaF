@@ -1,5 +1,6 @@
 import styled from "styled-components";
 import { Line } from "react-chartjs-2";
+import Chart from "chart.js/auto";
 
 var first = true;
 
@@ -67,7 +68,14 @@ const MiniChart = ({ history }) => {
       },
     },
   };
-  return <Line data={data} options={options} width={150} height={50} />;
+
+  return (
+    <Wrapper>
+      <Line data={data} options={options} width={150} height={50} />
+    </Wrapper>
+  );
 };
 
 export default MiniChart;
+
+const Wrapper = styled.div``;

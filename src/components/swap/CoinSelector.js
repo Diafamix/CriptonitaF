@@ -15,9 +15,9 @@ const CoinSelector = ({ open, who, selected, callback }) => {
     const [coins, setCoins] = useState();
 
     const fetchCoins = () => {
-        axios.get("http://localhost:8080/api/assets/getAll", {
+        axios.get("http://localhost:8080/api/markets", {
             headers: { 'Access-Control-Allow-Origin': '*', },
-            auth: { username: 'sergio.bernal', password: '1234' }
+            auth: { username: sessionStorage.getItem("username"), password: sessionStorage.getItem("password") }
         }).then((response) => {
             setCoins(response.data.data)
         }).catch((e) => console.log(e));
@@ -57,7 +57,7 @@ const CoinSelector = ({ open, who, selected, callback }) => {
                             {coins.map(coin => (
                                 <ListItem  style={{cursor: 'pointer'}} onClick={(e) => callback({coin: coin, who: who})}>
                                     <ListItemIcon>
-                                        <img src={coin.logo} alt={coin.id} style={imgStyle} />
+                                        <img src={coin.marketData.image} alt={coin.name} style={imgStyle} />
                                     </ListItemIcon>
                                     <ListItemText
                                         disableTypography

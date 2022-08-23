@@ -68,8 +68,8 @@ const TableCoins = ({ coins }) => {
   };
 
   if (click) {
-    return <Navigate to={"/coinInfo/" + click.name}></Navigate>;
-  }
+    return <Navigate to={"/coinInfo/" + click.id}></Navigate>
+}
 
   return (
     <Wrapper>
@@ -94,8 +94,8 @@ const TableCoins = ({ coins }) => {
                 </Box>
               ) : (
                 items.map((coin) => (
-                  <div key={coin.name} onClick={() => setClicked(coin)}>
-                    <Coin coin={coin} />
+                  <div key={coin.id} onClick={() => setClicked(coin)}>
+                      <Coin coin={coin} />
                     <Divider />
                   </div>
                 ))

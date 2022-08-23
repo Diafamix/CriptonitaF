@@ -6,12 +6,12 @@ import MiniChart from "../coinList/MiniChart";
 import axios from "axios";
 import NumberFormat from "react-number-format";
 import LinearProgress from "@mui/material/LinearProgress";
+import { Navigate } from "react-router-dom"
 
 const Portfolio = () => {
   const [history, setHistory] = useState([]);
-  const [portfolio, setPortfolio] = useState([]);
+  const [portfolio, setPortfolio] = useState(null);
   const [status, setStatus] = useState();
-  const [coinInfoMap, setCoinInfoMap] = useState(new Map());
 
   useEffect(() => {
     const getData = async () => {
@@ -38,9 +38,9 @@ const Portfolio = () => {
         })
         .then(async (data) => {
           console.log(data.data.data);
-          for (const element of data.data.data) {
-            await fetchSingleCoinInfo(element.coinName);
-          }
+          /**for (const element of data.data.data) {
+            await fetchSingleCoinInfo(element.id);
+          } **/
           setPortfolio(data.data.data);
           setStatus(true);
         })
@@ -49,7 +49,7 @@ const Portfolio = () => {
 
     const fetchSingleCoinInfo = async (name) => {
       await axios
-        .get("http://localhost:8080/api/assets/getByName/" + name, {
+        .get("http://localhost:8080/api/assets/" + name, {
           headers: {
             "Access-Control-Allow-Origin": "*",
           },
@@ -59,7 +59,7 @@ const Portfolio = () => {
           },
         })
         .then((data) => {
-          coinInfoMap.set(name, data.data.data);
+          //coinInfoMap.set(name, data.data.data);
           console.log(data.data.data.priceUsd);
         })
         .catch((e) => console.log(e));
@@ -67,6 +67,10 @@ const Portfolio = () => {
 
     getData();
   }, []);
+
+  if (sessionStorage.getItem("username") === null) {
+    return <Navigate to="/"></Navigate>
+}
 
   return (
     <>
@@ -92,6 +96,7 @@ const Portfolio = () => {
               <TableItem>
                 <TableRow>
                   <div style={{ flex: 3 }}>Name</div>
+                  <div style={{flex: 2}}>Quantity</div>
                   <div style={{ flex: 2 }}>Balance</div>
                   <div style={{ flex: 2 }}>Allocation</div>
                   <div style={{ flex: 0, color: "#0a0b0d" }}></div>
@@ -99,41 +104,44 @@ const Portfolio = () => {
               </TableItem>
               <Divider />
               <div>
-                {coinInfoMap.size === 0 ? (
+                {portfolio === null ? (
                   <LinearProgress />
                 ) : (
-                  portfolio.map((coin) => (
+                  portfolio.wallets.map((coin) => (
                     <div key={coin.name}>
                       <TableItem>
                         <TableRow>
-                          <div style={{ flex: 3 }}>
+                          <div style={{ flex: 3.1 }}>
                             <div style={{ flex: 1.4 }}>
                               <NameCol>
                                 <CoinIcon>
                                   <img
-                                    src={coinInfoMap.get(coin.coinName).logo}
+                                    src={coin.marketData.image}
                                     alt=""
                                   />
                                 </CoinIcon>
                                 <div>
-                                  <Primary>{coin.coinName}</Primary>
+                                  <Primary>{coin.name}</Primary>
                                   <Secondary>
-                                    {coinInfoMap.get(coin.coinName).symbol}
+                                    {coin.marketData.symbol.toUpperCase()}
                                   </Secondary>
                                 </div>
                               </NameCol>
                             </div>
                           </div>
+                          <div style={{ flex: 1.7 }}>
+                            {coin.quantity}
+                          </div>
                           <div style={{ flex: 2 }}>
                             <NumberFormat
-                              value={coinInfoMap.get(coin.coinName).priceUsd}
+                              value={(coin.quantity * coin.marketData.current_price).toFixed(3)}
                               displayType={"text"}
                               thousandSeparator={true}
                               prefix={"$"}
                             />
                           </div>
                           <div style={{ flex: 2 }}>
-                            {coinInfoMap.get(coin.coinName).priceUsd * 100} %
+                            {coin.allocation.toFixed(3)} %
                           </div>
                           <div style={{ flex: 0, color: "#0a0b0d" }}></div>
                         </TableRow>
