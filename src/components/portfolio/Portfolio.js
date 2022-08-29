@@ -6,7 +6,9 @@ import MiniChart from "../coinList/MiniChart";
 import axios from "axios";
 import NumberFormat from "react-number-format";
 import LinearProgress from "@mui/material/LinearProgress";
-import { Navigate } from "react-router-dom"
+import { Navigate } from "react-router-dom";
+import Error from "../Error";
+import Navbar from "../Navbar";
 
 const Portfolio = () => {
   const [history, setHistory] = useState([]);
@@ -19,14 +21,22 @@ const Portfolio = () => {
       fetchCoins();
     };
 
-    const fetchGrahp = async () => {
-      await axios
-        .get("https://api.coincap.io/v2/assets/bitcoin/history?interval=d1")
+    const fetchGrahp = () => {
+      axios
+        .get("http://localhost:8080/api/portfolio/chart", {
+          headers: {
+            "Access-Control-Allow-Origin": "*",
+          },
+          auth: {
+            username: sessionStorage.getItem("username"),
+            password: sessionStorage.getItem("password"),
+          },
+        })
         .then((data) => setHistory(data.data));
     };
 
-    const fetchCoins = async () => {
-      await axios
+    const fetchCoins = () => {
+      axios
         .get("http://localhost:8080/api/portfolio/getAll", {
           headers: {
             "Access-Control-Allow-Origin": "*",
@@ -54,7 +64,7 @@ const Portfolio = () => {
             "Access-Control-Allow-Origin": "*",
           },
           auth: {
-            username: "sergio.bernal",
+            username: "Front-admin",
             password: "1234",
           },
         })
@@ -69,8 +79,13 @@ const Portfolio = () => {
   }, []);
 
   if (sessionStorage.getItem("username") === null) {
-    return <Navigate to="/"></Navigate>
-}
+    return (
+      <>
+        <NavBar></NavBar>
+        <Error />
+      </>
+    );
+  }
 
   return (
     <>
@@ -82,7 +97,14 @@ const Portfolio = () => {
             <div>
               <Balance>
                 <BalanceTitle>Portfolio balance</BalanceTitle>
-                <BalanceValue>{"$"}</BalanceValue>
+                <BalanceValue>{portfolio === null ? 0.0 :
+                  <NumberFormat
+                    value={portfolio.balance.toFixed(5)}
+                    displayType={"text"}
+                    thousandSeparator={true}
+                    prefix={"$"}
+                  />}
+                  </BalanceValue>
               </Balance>
             </div>
             <MiniChart history={history} />
@@ -96,7 +118,7 @@ const Portfolio = () => {
               <TableItem>
                 <TableRow>
                   <div style={{ flex: 3 }}>Name</div>
-                  <div style={{flex: 2}}>Quantity</div>
+                  <div style={{ flex: 2 }}>Quantity</div>
                   <div style={{ flex: 2 }}>Balance</div>
                   <div style={{ flex: 2 }}>Allocation</div>
                   <div style={{ flex: 0, color: "#0a0b0d" }}></div>
@@ -115,10 +137,7 @@ const Portfolio = () => {
                             <div style={{ flex: 1.4 }}>
                               <NameCol>
                                 <CoinIcon>
-                                  <img
-                                    src={coin.marketData.image}
-                                    alt=""
-                                  />
+                                  <img src={coin.marketData.image} alt="" />
                                 </CoinIcon>
                                 <div>
                                   <Primary>{coin.name}</Primary>
@@ -129,9 +148,7 @@ const Portfolio = () => {
                               </NameCol>
                             </div>
                           </div>
-                          <div style={{ flex: 1.7 }}>
-                            {coin.quantity}
-                          </div>
+                          <div style={{ flex: 1.7 }}>{coin.quantity.toFixed(4)}</div>
                           <div style={{ flex: 2 }}>
                             <NumberFormat
                               value={(coin.quantity * coin.marketData.current_price).toFixed(3)}

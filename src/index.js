@@ -15,6 +15,8 @@ import CoinInfo from "./components/coinInfo/CoinInfo";
 import HistoryPage from "./pages/HistoryPage";
 import AccountPage from "./pages/AccountPage";
 import CustomersPage from "./pages/CustomersPage";
+import Retrieve from "./components/registration/Retrieve"
+import Send from "./components/swap/Send"
 
 ReactDOM.render(
   <BrowserRouter>
@@ -22,33 +24,7 @@ ReactDOM.render(
       <Route path="/" element={<Home />}></Route>
       <Route path="/Home" element={<Home />}></Route>
       <Route path="/coinInfo/:coin" element={<CoinInfo />} />
-      <Route
-        path="/Login"
-        element={
-          <GuardedRoute condition={NeedsRegistration()}>
-            {" "}
-            <Login />{" "}
-          </GuardedRoute>
-        }
-      />
-      <Route
-        path="/Register"
-        element={
-          <GuardedRoute condition={NeedsRegistration()}>
-            {" "}
-            <RegisterPage />{" "}
-          </GuardedRoute>
-        }
-      />
-      <Route
-        path="/Portfolio"
-        element={
-          <GuardedRoute condition={NeedsRegistration()}>
-            {" "}
-            <Portfolio />{" "}
-          </GuardedRoute>
-        }
-      />
+      <Route path="/Portfolio" element={<Portfolio></Portfolio>} />
       <Route
         path="/Swap"
         element={
@@ -58,10 +34,22 @@ ReactDOM.render(
           </GuardedRoute>
         }
       />
-      <Route path="/History" element={<HistoryPage />}></Route>
+
+      <Route
+        path="/Send"
+        element={
+          <GuardedRoute condition={NeedsRegistration()}>
+            {" "}
+            <Send />{" "}
+          </GuardedRoute>
+        }
+      />
+
+      <Route path="/login" element={<Login/>}></Route>
+      <Route path="/register" element={<RegisterPage/>}></Route>
+      <Route path="/Retrieve" element={<Retrieve/>}></Route>
+      <Route path="/History" element={<CustomersPage />}></Route>
       <Route path="/LogOut" element={<LogOut />} />
-      <Route path="/AccountPage" element={<AccountPage />} />
-      <Route path="/CustomersPage" element={<CustomersPage />} />
     </Routes>
   </BrowserRouter>,
   document.getElementById("root")

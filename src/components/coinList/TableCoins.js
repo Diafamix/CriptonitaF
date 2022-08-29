@@ -11,7 +11,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 import Box from "@mui/material/Box";
 import { Navigate } from "react-router-dom";
 
-const limitPage = 9;
+const limitPage = 8;
 
 const theme = createTheme({
   components: {

@@ -139,14 +139,6 @@ const Register = () => {
         <Form.Item
           name="password"
           label="Contraseña"
-          tooltip="La contraseña tiene que tener 8 caracteres"
-          rules={[
-            {
-              required: true,
-              message: "Introduzca su contraseña",
-            },
-          ]}
-          hasFeedback
         >
           <Input.Password />
         </Form.Item>

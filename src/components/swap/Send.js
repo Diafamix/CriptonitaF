@@ -11,9 +11,8 @@ import Typography from '@mui/material/Typography';
 import axios from "axios";
 import { FixedSizeList } from 'react-window';
 import { Navigate } from "react-router-dom"
-import { FormHelperText } from "@mui/material";
 
-const Swap = () => {
+const Send = () => {
 
     const [firstCoin, setFirstCoin] = useState()
     const [quantity, setQuantity] = useState(0.0)
@@ -21,8 +20,6 @@ const Swap = () => {
     const [value, setValue] = useState({ loading: false, value: '0.0' })
     const [openPopUp, setOpenPopUp] = useState({ open: false, who: '' })
     const [timeID, setTimeID] = useState()
-    const [status, setStatus] = useState(false)
-    const [error, setError] = useState()
 
     useEffect(() => {
         calculateValue()
@@ -111,34 +108,17 @@ const Swap = () => {
             auth: { username: sessionStorage.getItem("username"), password: sessionStorage.getItem("password") },
             params: { from: firstCoin.id, to: secondCoin.id, amount: quantity }
         })
-            .then((data) => {
-                console.log(data)
-                console.log(data.data.status.error_message)
-
-                if (data.data.status.error_message.length > 0) {
-                    settingError(data.data.status.error_message)
-                } else {
-                    setFirstCoin(undefined)
-                    setSecondCoin(undefined)
-                    setQuantity(0)
-                    setStatus(true)
-                }
-            }).catch((e) => settingError(e));
-    }
-
-    const settingError = (msg) => {
-        setError(msg)
-        setTimeout(() => {
-            setError(undefined)
-        }, 5000);
+        .then((data) => {
+            console.log(data)
+           setFirstCoin(undefined)
+           setSecondCoin(undefined)
+           setQuantity(0) 
+        });
     }
 
     if (sessionStorage.getItem("username") === null) {
         return <Navigate to="/"></Navigate>
     }
-
-    if (status === true)
-        return <Navigate to="/portfolio" />
 
     return (
         <>
@@ -150,7 +130,7 @@ const Swap = () => {
                     <InnerContainer>
                         <SwapContainer>
                             <TitleContainer>
-                                <Title>Swap</Title>
+                                <Title>Send</Title>
                                 <InnerSwapContainer>
                                     <FirstSwap>
                                         <SwapsInnerContainer>
@@ -171,9 +151,18 @@ const Swap = () => {
                                             {selectCoinFunction('second')}
                                         </SwapsInnerContainer>
                                     </SecondSwap>
-                                    {!error ? null : <FormHelperText error>{error}</FormHelperText>}
+                                    <ThirdSwap>
+                                        <SwapsInnerContainer>
+                                            <SwapInput
+                                                placeholder='0.0'
+                                                readOnly
+                                                value={value.value}
+                                            />
+                                            {selectCoinFunction('second')}
+                                        </SwapsInnerContainer>
+                                    </ThirdSwap>
                                     <SwapButton onClick={swapNowHandler}>
-                                        Swap Now
+                                        Send Now
                                     </SwapButton>
                                 </InnerSwapContainer>
                             </TitleContainer>
@@ -194,7 +183,7 @@ const Swap = () => {
     )
 }
 
-export default Swap
+export default Send
 
 const Wrapper = styled.div`
   flex: 1;
@@ -220,7 +209,7 @@ const InnerContainer = styled.div`
 const SwapContainer = styled.div`
     background-color: rgb(25, 27, 31);
     width: 480px;
-    min-height: 300px;
+    height: 400px;
     border-radius: 20px;
     border: 1px solid transparent;
     box-shadow: rgba(0, 0, 0, 0.01) 0px 0px 1px, rgba(0, 0, 0, 0.04) 0px 4px 8px, rgba(0, 0, 0, 0.04) 0px 16px 24px, rgba(0, 0, 0, 0.01) 0px 24px 32px;
@@ -235,10 +224,11 @@ const TitleContainer = styled.div`
 const Title = styled.h5`
     color: #8a919e;
     font-size: 1.2rem;
+
 `
 
 const InnerSwapContainer = styled.div`
-    padding: 8px;
+    padding: 10px;
 `
 
 const FirstSwap = styled.div`
@@ -268,6 +258,23 @@ const SecondSwap = styled.div`
     &:hover {
         border: 0.2px solid gray;
     }
+
+`
+
+const ThirdSwap = styled.div`
+margin-top: 10px;
+width: 100%;
+height: 75px;
+background-color: rgb(33, 36, 41);
+border-radius: 20px;
+border-width: 4px;
+order-style: solid;
+transition: transform 450ms ease 0s;
+border: 0.2px solid transparent;
+
+&:hover {
+    border: 0.2px solid gray;
+}
 
 `
 

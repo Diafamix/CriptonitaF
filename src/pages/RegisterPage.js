@@ -4,6 +4,8 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { styled } from "@mui/material/styles";
 import * as React from "react";
+import { Navigate } from "react-router-dom";
+import axios from "axios";
 import {
   createTheme,
   ThemeProvider,
@@ -77,11 +79,14 @@ const Register = () => {
   const [password, setPassword] = React.useState("");
   const [leyenda, setLeyenda] = React.useState("");
   const [errorpassword, setErrorPassword] = React.useState(false);
+  const [state, setState] = React.useState(false);
+  const [error, setError] = React.useState()
+
   const router = useRouter();
   const formik = useFormik({
     initialValues: {
       email: "",
-      firstName: "",
+      username: "",
       password: "",
       policy: false,
     },
@@ -90,17 +95,51 @@ const Register = () => {
         .email("Must be a valid email")
         .max(255)
         .required("Email is required"),
-      firstName: Yup.string().max(255).required("First name is required"),
-      lastName: Yup.string().max(255).required("Last name is required"),
+      username: Yup.string()
+        .required("Username is required"),
       password: Yup.string()
-        .max(8, "Password cannot be longer than 8 characters")
         .required("Password is required"),
       policy: Yup.boolean().oneOf([true], "This field must be checked"),
     }),
-    onSubmit: () => {
-      router.push("/");
+    onSubmit: values => {
+      console.log(values);
+      sendRegistration(values);
     },
   });
+
+  const sendRegistration = (values) => {
+    axios
+      .post("http://localhost:8080/authentication/register", null, {
+        //Test if the connection is established correctly
+        headers: {
+          "Access-Control-Allow-Origin": "*",
+        },
+        params: { mail: values.email, username: values.username, password: values.password }
+      })
+      .then((data) => {
+        console.log(data)
+        if (data.data.status.error_message.length > 0) {
+          settingError(data.data.status.error_message)
+        } else
+          setState(true)
+      })
+      .catch((e) => {
+        console.log(e)
+        settingError(e.response.data.status.error_message)
+      }
+      );
+  }
+
+  const settingError = (msg) => {
+    setError(msg)
+    setTimeout(() => {
+      setError(undefined)
+    }, 5000);
+  }
+
+  if (state === true) {
+    return <Navigate to="/login"></Navigate>
+  }
 
   return (
     <>
@@ -117,7 +156,7 @@ const Register = () => {
         >
           <Container maxWidth="sm">
             <form onSubmit={formik.handleSubmit}>
-              <Box sx={{ my: 3 }}>
+              <Box sx={{ my: 3, marginTop: "80px" }}>
                 <Typography color="white" variant="h4">
                   Create a new account
                 </Typography>
@@ -127,16 +166,16 @@ const Register = () => {
               </Box>
               <CssTextField
                 error={Boolean(
-                  formik.touched.firstName && formik.errors.firstName
+                  formik.touched.username && formik.errors.username
                 )}
                 fullWidth
-                helperText={formik.touched.firstName && formik.errors.firstName}
-                label="First Name"
+                helperText={formik.touched.username && formik.errors.username}
+                label="Username"
                 margin="normal"
-                name="firstName"
+                name="username"
                 onBlur={formik.handleBlur}
                 onChange={formik.handleChange}
-                value={formik.values.firstName}
+                value={formik.values.username}
                 variant="outlined"
               />
               <CssTextField
@@ -195,10 +234,11 @@ const Register = () => {
               {Boolean(formik.touched.policy && formik.errors.policy) && (
                 <FormHelperText error>{formik.errors.policy}</FormHelperText>
               )}
+              {!error ? null : <FormHelperText error>{error}</FormHelperText>}
               <Box sx={{ py: 2 }}>
                 <Button
                   color="primary"
-                  disabled={formik.isSubmitting}
+                  onSubmit={() => console.log("woww")}
                   fullWidth
                   size="large"
                   type="submit"

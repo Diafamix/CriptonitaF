@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import CoinbaseLogo from '../../assets/img/cb-logo.png'
 import { Link } from "react-router-dom";
 
-const navItems = ["Portfolio", "Swap", "Send/Receive"]
+const navItems = ["Portfolio", "Swap"]
 
 const Sidebar = () => {
   const [activeIcon, setActiveIcon] = useState(navItems[0].title)

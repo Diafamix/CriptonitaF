@@ -26,6 +26,8 @@ import "./history.css";
 import TextField from "@mui/material/TextField";
 import { matchSorter } from "match-sorter";
 import Autocomplete from "@mui/material/Autocomplete";
+import axios from "axios";
+import { useState, useEffect } from "react";
 
 const filterOptions = (options, { inputValue }) =>
   matchSorter(options, inputValue);
@@ -127,22 +129,28 @@ const headCell = [
     label: "Name",
   },
   {
-    id: "price",
+    id: "origin",
     numeric: true,
     disablePadding: false,
-    label: "Price",
+    label: "Origin",
   },
   {
-    id: "cap.market",
+    id: "destiny",
     numeric: true,
     disablePadding: false,
-    label: "Cap.Market",
+    label: "Destiny",
   },
   {
-    id: "last",
+    id: "quantity",
     numeric: true,
     disablePadding: false,
-    label: "Last 7 days",
+    label: "Quantity",
+  },
+  {
+    id: "date",
+    numeric: true,
+    disablePadding: false,
+    label: "Date",
   },
 ];
 
@@ -274,6 +282,30 @@ export default function EnhancedTable() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [history, setHistory] = useState(undefined);
+
+  useEffect(() => {
+    getHistory();
+  }, []);
+
+  const getHistory = () => {
+    axios
+      .get(
+        "http://localhost:8080/api/history?start=10-08-2022&end=28-08-2022",
+        {
+          headers: { "Access-Control-Allow-Origin": "*" },
+          auth: {
+            username: sessionStorage.getItem("username"),
+            password: sessionStorage.getItem("password"),
+          },
+        }
+      )
+      .then((data) => {
+        console.log(data.data);
+        setHistory(data.data.data);
+      })
+      .catch((e) => console.log(e));
+  };
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === "asc";
@@ -329,6 +361,8 @@ export default function EnhancedTable() {
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
+  if (history === undefined) return null;
+
   return (
     <Box sx={{ width: "100%" }}>
       <Paper sx={{ width: "80%", mb: 2, margin: "0 auto", mt: 20 }}>
@@ -350,10 +384,10 @@ export default function EnhancedTable() {
             <TableBody>
               {/* if you don't need to support IE11, you can replace the `stableSort` call with:
                  rows.slice().sort(getComparator(order, orderBy)) */}
-              {stableSort(rows, getComparator(order, orderBy))
+              {history
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                 .map((row, index) => {
-                  const isItemSelected = isSelected(row.name);
+                  const isItemSelected = isSelected(row.user.username);
                   const labelId = `enhanced-table-checkbox-${index}`;
 
                   return (
@@ -362,7 +396,7 @@ export default function EnhancedTable() {
                       role="checkbox"
                       aria-checked={isItemSelected}
                       tabIndex={-1}
-                      key={row.name}
+                      key={row.user.username}
                       selected={isItemSelected}
                     >
                       <TableCell padding="checkbox">
@@ -378,10 +412,11 @@ export default function EnhancedTable() {
                         />
                       </TableCell>
 
-                      <TableCell align="center">{row.calories}</TableCell>
-                      <TableCell align="center">{row.fat}</TableCell>
-                      <TableCell align="center">{row.carbs}</TableCell>
-                      <TableCell align="center">{row.protein}</TableCell>
+                      <TableCell align="center">{row.user.username}</TableCell>
+                      <TableCell align="center">{row.origin}</TableCell>
+                      <TableCell align="center">{row.destiny}</TableCell>
+                      <TableCell align="center">{row.quantity}</TableCell>
+                      <TableCell align="center">{row.date}</TableCell>
                     </StyledTableRow>
                   );
                 })}

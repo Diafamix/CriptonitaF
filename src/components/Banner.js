@@ -4,6 +4,7 @@ import headerImg from "../assets/img/header-img.png";
 import { ArrowRightCircle } from "react-bootstrap-icons";
 import "animate.css";
 import TrackVisibility from "react-on-screen";
+import { Link } from "react-router-dom";
 
 export const Banner = () => {
   return (
@@ -20,11 +21,15 @@ export const Banner = () => {
                 >
                   <h1>{`Welcome to Cryptonita`}</h1>
                   <p>
-                  Swap, earn, and build on the leading decentralized crypto trading protocol.
+                    Swap, earn, and build on the leading decentralized crypto trading protocol.
                   </p>
+                  {sessionStorage.getItem("username") ? null :
                   <button onClick={() => console.log("connect")}>
-                    Let’s Connect <ArrowRightCircle size={25} />
+                    <Link to="Login" style={{color:"white"}}>
+                      Let’s Connect <ArrowRightCircle size={25} />
+                    </Link>
                   </button>
+                  }
                 </div>
               )}
             </TrackVisibility>

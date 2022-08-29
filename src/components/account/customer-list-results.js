@@ -1,7 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import PerfectScrollbar from "react-perfect-scrollbar";
 import PropTypes from "prop-types";
 import { format } from "date-fns";
+import axios from "axios";
 import {
   Avatar,
   Box,
@@ -21,6 +22,30 @@ export const CustomerListResults = ({ customers, ...rest }) => {
   const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
   const [limit, setLimit] = useState(10);
   const [page, setPage] = useState(0);
+  const [historial, setHistorial] = useState(undefined);
+
+  useEffect(() => {
+    getHistorial();
+  }, []);
+
+  const getHistorial = () => {
+    axios
+      .get(
+        "http://localhost:8080/api/history?start=10-08-2022&end=30-12-2022",
+        {
+          headers: { "Access-Control-Allow-Origin": "*" },
+          auth: {
+            username: sessionStorage.getItem("username"),
+            password: sessionStorage.getItem("password"),
+          },
+        }
+      )
+      .then((data) => {
+        console.log(data.data);
+        setHistorial(data.data.data);
+      })
+      .catch((e) => console.log(e));
+  };
 
   const handleSelectAll = (event) => {
     let newSelectedCustomerIds;
@@ -69,11 +94,13 @@ export const CustomerListResults = ({ customers, ...rest }) => {
     setPage(newPage);
   };
 
+  if (historial === undefined) return null;
+
   return (
     <Card {...rest}>
       <PerfectScrollbar>
         <Box sx={{ minWidth: 1050 }}>
-          <Table>
+          <Table sx={{ backgroundColor: "#2196f3" }}>
             <TableHead>
               <TableRow>
                 <TableCell padding="checkbox">
@@ -87,26 +114,40 @@ export const CustomerListResults = ({ customers, ...rest }) => {
                     onChange={handleSelectAll}
                   />
                 </TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>Name</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>Email</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>Location</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>Phone</TableCell>
-                <TableCell sx={{ fontWeight: "bold" }}>
+                <TableCell sx={{ fontWeight: "bold", color: "white" }}>
+                  Name
+                </TableCell>
+                <TableCell sx={{ fontWeight: "bold", color: "white" }}>
+                  Origin
+                </TableCell>
+                <TableCell sx={{ fontWeight: "bold", color: "white" }}>
+                  Destiny
+                </TableCell>
+                <TableCell sx={{ fontWeight: "bold", color: "white" }}>
+                  Quantity
+                </TableCell>
+                <TableCell sx={{ fontWeight: "bold", color: "white" }}>
                   Registration date
                 </TableCell>
               </TableRow>
             </TableHead>
-            <TableBody>
-              {customers.slice(0, limit).map((customer) => (
+            <TableBody sx={{ backgroundColor: "#121212" }}>
+              {historial.slice(0, limit).map((customer) => (
                 <TableRow
                   hover
-                  key={customer.id}
-                  selected={selectedCustomerIds.indexOf(customer.id) !== -1}
+                  key={customer.user.name}
+                  selected={
+                    selectedCustomerIds.indexOf(customer.user.name) !== -1
+                  }
                 >
                   <TableCell padding="checkbox">
                     <Checkbox
-                      checked={selectedCustomerIds.indexOf(customer.id) !== -1}
-                      onChange={(event) => handleSelectOne(event, customer.id)}
+                      checked={
+                        selectedCustomerIds.indexOf(customer.user.name) !== -1
+                      }
+                      onChange={(event) =>
+                        handleSelectOne(event, customer.user.name)
+                      }
                       value="true"
                     />
                   </TableCell>
@@ -117,22 +158,24 @@ export const CustomerListResults = ({ customers, ...rest }) => {
                         display: "flex",
                       }}
                     >
-                      <Avatar src={customer.avatarUrl} sx={{ mr: 2 }}>
-                        {getInitials(customer.name)}
+                      <Avatar src={customer.user.name} sx={{ mr: 2 }}>
+                        {getInitials(customer.user.name)}
                       </Avatar>
-                      <Typography color="textPrimary" variant="body1">
-                        {customer.name}
+                      <Typography color="white" variant="body1">
+                        {customer.user.username}
                       </Typography>
                     </Box>
                   </TableCell>
-                  <TableCell>{customer.email}</TableCell>
-                  <TableCell>
-                    {`${customer.address.city}, ${customer.address.state}, ${customer.address.country}`}
+                  <TableCell sx={{ color: "white" }}>
+                    {customer.origin}
                   </TableCell>
-                  <TableCell>{customer.phone}</TableCell>
-                  <TableCell>
-                    {format(customer.createdAt, "dd/MM/yyyy")}
+                  <TableCell sx={{ color: "white" }}>
+                    {customer.destiny}
                   </TableCell>
+                  <TableCell sx={{ color: "white" }}>
+                    {customer.quantity}
+                  </TableCell>
+                  <TableCell sx={{ color: "white" }}>{customer.date}</TableCell>
                 </TableRow>
               ))}
             </TableBody>
@@ -147,6 +190,10 @@ export const CustomerListResults = ({ customers, ...rest }) => {
         page={page}
         rowsPerPage={limit}
         rowsPerPageOptions={[5, 10, 25]}
+        sx={{
+          color: "white",
+          backgroundColor: "#2196f3",
+        }}
       />
     </Card>
   );
