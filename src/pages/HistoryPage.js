@@ -1,11 +1,11 @@
 import Navbar from "../components/Navbar";
-import EnhancedTableHead from "../components/history/history";
+import TableHistory from "../components/history/TableHistory";
 
 function HistoryPage() {
   return (
     <>
       <Navbar></Navbar>
-      <EnhancedTableHead></EnhancedTableHead>
+      <TableHistory></TableHistory>
     </>
   );
 }

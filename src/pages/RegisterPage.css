@@ -1,0 +1,14 @@
+@media only screen and (max-width: 600px) {
+  .css-q7ge2x-MuiContainer-root {
+    position: inherit;
+    display: flex;
+    justify-content: flex-end;
+  }
+}
+
+@media only screen and (max-width: 600px) {
+  .footerLogin {
+    margin-top: 50px;
+    padding: 0;
+  }
+}

@@ -10,6 +10,7 @@ import Button from "@mui/material/Button";
 import LinearProgress from "@mui/material/LinearProgress";
 import Box from "@mui/material/Box";
 import { Navigate } from "react-router-dom";
+import "./TableCoins.css";
 
 const limitPage = 8;
 
@@ -68,8 +69,8 @@ const TableCoins = ({ coins }) => {
   };
 
   if (click) {
-    return <Navigate to={"/coinInfo/" + click.id}></Navigate>
-}
+    return <Navigate to={"/coinInfo/" + click.id}></Navigate>;
+  }
 
   return (
     <Wrapper>
@@ -95,7 +96,7 @@ const TableCoins = ({ coins }) => {
               ) : (
                 items.map((coin) => (
                   <div key={coin.id} onClick={() => setClicked(coin)}>
-                      <Coin coin={coin} />
+                    <Coin coin={coin} />
                     <Divider />
                   </div>
                 ))
@@ -103,7 +104,6 @@ const TableCoins = ({ coins }) => {
             </div>
           </Table>
         </PortfolioTable>
-
         <Stack spacing={2}>
           <ThemeProvider theme={theme}>
             <Pagination

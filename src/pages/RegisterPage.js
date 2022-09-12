@@ -23,6 +23,8 @@ import {
   Typography,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import "./RegisterPage.css";
+import Footer from "../components/Footer";
 
 const CssTextField = styled(TextField)({
   "& label.Mui-focused": {
@@ -80,7 +82,7 @@ const Register = () => {
   const [leyenda, setLeyenda] = React.useState("");
   const [errorpassword, setErrorPassword] = React.useState(false);
   const [state, setState] = React.useState(false);
-  const [error, setError] = React.useState()
+  const [error, setError] = React.useState();
 
   const router = useRouter();
   const formik = useFormik({
@@ -95,13 +97,11 @@ const Register = () => {
         .email("Must be a valid email")
         .max(255)
         .required("Email is required"),
-      username: Yup.string()
-        .required("Username is required"),
-      password: Yup.string()
-        .required("Password is required"),
+      username: Yup.string().required("Username is required"),
+      password: Yup.string().required("Password is required"),
       policy: Yup.boolean().oneOf([true], "This field must be checked"),
     }),
-    onSubmit: values => {
+    onSubmit: (values) => {
       console.log(values);
       sendRegistration(values);
     },
@@ -114,31 +114,33 @@ const Register = () => {
         headers: {
           "Access-Control-Allow-Origin": "*",
         },
-        params: { mail: values.email, username: values.username, password: values.password }
+        params: {
+          mail: values.email,
+          username: values.username,
+          password: values.password,
+        },
       })
       .then((data) => {
-        console.log(data)
+        console.log(data);
         if (data.data.status.error_message.length > 0) {
-          settingError(data.data.status.error_message)
-        } else
-          setState(true)
+          settingError(data.data.status.error_message);
+        } else setState(true);
       })
       .catch((e) => {
-        console.log(e)
-        settingError(e.response.data.status.error_message)
-      }
-      );
-  }
+        console.log(e);
+        settingError(e.response.data.status.error_message);
+      });
+  };
 
   const settingError = (msg) => {
-    setError(msg)
+    setError(msg);
     setTimeout(() => {
-      setError(undefined)
+      setError(undefined);
     }, 5000);
-  }
+  };
 
   if (state === true) {
-    return <Navigate to="/login"></Navigate>
+    return <Navigate to="/login"></Navigate>;
   }
 
   return (
@@ -220,15 +222,14 @@ const Register = () => {
                 />
                 <Typography color="white" variant="body2">
                   I have read the{" "}
-                  <NextLink href="#" passHref>
-                    <Link
-                      color="primary"
-                      underline="always"
-                      variant="subtitle2"
-                    >
-                      Terms and Conditions
-                    </Link>
-                  </NextLink>
+                  <Link
+                    href="/Terms"
+                    color="primary"
+                    underline="always"
+                    variant="subtitle2"
+                  >
+                    Terms and Conditions
+                  </Link>
                 </Typography>
               </Box>
               {Boolean(formik.touched.policy && formik.errors.policy) && (
@@ -257,6 +258,9 @@ const Register = () => {
           </Container>
         </Box>
       </ThemeProvider>
+      <div className="footerLogin">
+        <Footer></Footer>
+      </div>
     </>
   );
 };

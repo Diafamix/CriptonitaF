@@ -1,14 +1,16 @@
 import React from "react";
 import Navbar from "./Navbar";
-import Banner from "./Banner";
+import Carousel from "./Banner/Carousel";
 import Skill from "./coinList/CoinList";
+import Footer from "./Footer";
 
 function Home() {
   return (
     <>
       <Navbar></Navbar>
-      <Banner></Banner>
+      <Carousel></Carousel>
       <Skill></Skill>
+      <Footer></Footer>
     </>
   );
 }

@@ -13,16 +13,19 @@ import GuardedRoute from "./components/utils/GuardedRoute";
 import NeedsRegistration from "./components/utils/NeedsRegistration";
 import CoinInfo from "./components/coinInfo/CoinInfo";
 import HistoryPage from "./pages/HistoryPage";
-import AccountPage from "./pages/AccountPage";
+import CoinPage from "./pages/CoinPage";
 import CustomersPage from "./pages/CustomersPage";
-import Retrieve from "./components/registration/Retrieve"
-import Send from "./components/swap/Send"
+import Retrieve from "./components/registration/Retrieve";
+import Send from "./components/swap/Send";
+import "react-alice-carousel/lib/alice-carousel.css";
+import Terms from "./components/Terms";
 
 ReactDOM.render(
   <BrowserRouter>
     <Routes>
       <Route path="/" element={<Home />}></Route>
       <Route path="/Home" element={<Home />}></Route>
+      <Route path="/coins/:id" elemnt={<CoinPage />}></Route>;
       <Route path="/coinInfo/:coin" element={<CoinInfo />} />
       <Route path="/Portfolio" element={<Portfolio></Portfolio>} />
       <Route
@@ -34,7 +37,6 @@ ReactDOM.render(
           </GuardedRoute>
         }
       />
-
       <Route
         path="/Send"
         element={
@@ -44,12 +46,12 @@ ReactDOM.render(
           </GuardedRoute>
         }
       />
-
-      <Route path="/login" element={<Login/>}></Route>
-      <Route path="/register" element={<RegisterPage/>}></Route>
-      <Route path="/Retrieve" element={<Retrieve/>}></Route>
+      <Route path="/login" element={<Login />}></Route>
+      <Route path="/register" element={<RegisterPage />}></Route>
+      <Route path="/Retrieve" element={<Retrieve />}></Route>
       <Route path="/History" element={<CustomersPage />}></Route>
       <Route path="/LogOut" element={<LogOut />} />
+      <Route path="/Terms" element={<Terms />} />
     </Routes>
   </BrowserRouter>,
   document.getElementById("root")

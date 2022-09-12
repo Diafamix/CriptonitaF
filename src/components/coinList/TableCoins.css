@@ -1,0 +1,14 @@
+@media only screen and (max-width: 600px) {
+  .gUPefZ > div {
+    flex-direction: column;
+  }
+  .bIQrTK {
+    display: none;
+  }
+  .banner {
+    padding: 0 0 100px 0;
+  }
+  .alice-carousel {
+    padding-bottom: 0;
+  }
+}

@@ -1,12 +1,19 @@
 span.css-1qgma8u-MuiButtonBase-root-MuiTableSortLabel-root.Mui-active {
-    color: white;} 
-span.css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root {
-    color: white;
+  color: white;
 }
-span.css-1qgma8u-MuiButtonBase-root-MuiTableSortLabel-root.Mui-active .MuiTableSortLabel-icon {
-    color: white;
+span.css-12wnr2w-MuiButtonBase-root-MuiCheckbox-root {
+  color: white;
+}
+span.css-1qgma8u-MuiButtonBase-root-MuiTableSortLabel-root.Mui-active
+  .MuiTableSortLabel-icon {
+  color: white;
 }
 th.css-1nslmh4-MuiTableCell-root {
-    text-align: center;
+  text-align: center;
 }
-span.css-1qgma8u-MuiButtonBase-root-MuiTableSortLabel-root:hover {color: grey;}
+span.css-1qgma8u-MuiButtonBase-root-MuiTableSortLabel-root:hover {
+  color: grey;
+}
+.css-1ex1afd-MuiTableCell-root {
+  color: white;
+}

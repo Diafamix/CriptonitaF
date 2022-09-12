@@ -7,9 +7,9 @@ import { MdKeyboardArrowUp } from "react-icons/md";
 import axios from "axios";
 import MiniChart from "../coinList/MiniChart";
 import { useParams } from "react-router";
-import SockJS from 'sockjs-client';
-import Stomp from 'stompjs';
-import TradingViewChart from "./TradingViewChart"
+import SockJS from "sockjs-client";
+import Stomp from "stompjs";
+import TradingViewChart from "./TradingViewChart";
 
 const CoinInfo = () => {
   const [metadata, setMetadata] = useState(null);
@@ -31,10 +31,9 @@ const CoinInfo = () => {
     }); 
 
     return () => stompClient.disconnect(() => { }) **/
-
   }, []);
 
-  console.log(price)
+  console.log(price);
   const fetchGrahp = () => {
     axios
       .get("http://localhost:8080/api/assets/" + coin, {
@@ -49,7 +48,7 @@ const CoinInfo = () => {
 
   const imgStyle = { height: 40, width: 40 };
   console.log(metadata);
-  
+
   if (metadata === null) {
     return null;
   }
@@ -62,10 +61,7 @@ const CoinInfo = () => {
           <Grid container spacing={2}>
             <Grid item xs={4}>
               <FirstTitleContainer>
-                <img
-                  src={metadata.image}
-                  style={imgStyle}
-                />
+                <img src={metadata.image} style={imgStyle} />
                 <Typography
                   variant="h4"
                   display="block"
@@ -108,7 +104,7 @@ const CoinInfo = () => {
               {metadata.name} to USD Chart
             </Typography>
             <ActualChartContainer>
-                    <TradingViewChart symbol={metadata.symbol} />
+              <TradingViewChart symbol={metadata.symbol} />
               {/* <MiniChart history={history} /> */}
             </ActualChartContainer>
           </ChartContainer>
@@ -131,7 +127,6 @@ const CoinInfo = () => {
               }}
             >
               <div dangerouslySetInnerHTML={{ __html: metadata.description }} />
-              
             </Typography>
           </DescriptionContainer>
         </SecondPart>
@@ -140,126 +135,15 @@ const CoinInfo = () => {
   );
 };
 
-/** 
-<Grid container spacing={2}>
-<Grid item xs={3}>
-  <Typography
-    variant="body2"
-    display="block"
-    style={{
-      color: "#a1a7bb",
-      fontWeight: "bold",
-      marginTop: "12px",
-      marginRight: "10px",
-    }}
-  >
-    Market Cap
-  </Typography>
-  <Typography
-    variant="body2"
-    display="block"
-    style={{
-      color: "white",
-      fontWeight: "bold",
-      marginTop: "12px",
-      marginRight: "10px",
-    }}
-  >
-    $459,939,862,561
-  </Typography>
-</Grid>
-
-<Grid item xs={3}>
-  <Typography
-    variant="body2"
-    display="block"
-    style={{
-      color: "#a1a7bb",
-      fontWeight: "bold",
-      marginTop: "12px",
-      marginRight: "10px",
-    }}
-  >
-    Market Cap
-  </Typography>
-  <Typography
-    variant="body2"
-    display="block"
-    style={{
-      color: "white",
-      fontWeight: "bold",
-      marginTop: "12px",
-      marginRight: "10px",
-    }}
-  >
-    $459,939,862,561
-  </Typography>
-</Grid>
-
-<Grid item xs={3}>
-  <Typography
-    variant="body2"
-    display="block"
-    style={{
-      color: "#a1a7bb",
-      fontWeight: "bold",
-      marginTop: "12px",
-      marginRight: "10px",
-    }}
-  >
-    Market Cap
-  </Typography>
-  <Typography
-    variant="body2"
-    display="block"
-    style={{
-      color: "white",
-      fontWeight: "bold",
-      marginTop: "12px",
-      marginRight: "10px",
-    }}
-  >
-    $459,939,862,561
-  </Typography>
-</Grid>
-
-<Grid item xs={3}>
-  <Typography
-    variant="body2"
-    display="block"
-    style={{
-      color: "#a1a7bb",
-      fontWeight: "bold",
-      marginTop: "12px",
-      marginRight: "10px",
-    }}
-  >
-    Market Cap
-  </Typography>
-  <Typography
-    variant="body2"
-    display="block"
-    style={{
-      color: "white",
-      fontWeight: "bold",
-      marginTop: "12px",
-      marginRight: "10px",
-    }}
-  >
-    $459,939,862,561
-  </Typography>
-</Grid>
-</Grid> **/
-
 export default CoinInfo;
 
 const Wrapper = styled.div`
   padding-left: 80px;
   padding-right: 80px;
+  margin-top: 10px;
 `;
 
 const TitleContainer = styled.div`
-  margin-top: 120px;
   margin-left: 60px;
   margin-right: 60px;
   color: white;
@@ -267,7 +151,7 @@ const TitleContainer = styled.div`
 
 const FirstTitleContainer = styled.div`
   display: flex;
-  margin-top: 25px;
+  margin-top: 70px;
 `;
 
 const SecondTitleContainer = styled.div`

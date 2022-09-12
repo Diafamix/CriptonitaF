@@ -6,12 +6,16 @@ import { styled } from "@mui/material/styles";
 import * as React from "react";
 import { Navigate } from "react-router-dom";
 import axios from "axios";
+import headerImg from "../../assets/img/header-img.png";
+import TrackVisibility from "react-on-screen";
+import { Col } from "react-bootstrap";
 import {
   createTheme,
   ThemeProvider,
   experimental_sx as sx,
 } from "@mui/material/styles";
 import Navbar from "../Navbar";
+import "./Login.css";
 import {
   Box,
   Grid,
@@ -24,6 +28,8 @@ import {
   Typography,
 } from "@mui/material";
 import ArrowBackIcon from "@mui/icons-material/ArrowBack";
+import Footer from "../Footer";
+import useMediaQuery from "@mui/material/useMediaQuery";
 
 const CssTextField = styled(TextField)({
   "& label.Mui-focused": {
@@ -48,6 +54,12 @@ const theme = createTheme({
           borderColor: "white",
           color: "white",
         }),
+      },
+    },
+
+    MuiUseMediaQuery: {
+      defaultProps: {
+        noSsr: true,
       },
     },
 
@@ -83,6 +95,8 @@ const SignIn = () => {
   const [state, setState] = React.useState(false);
   const [error, setError] = React.useState(undefined);
 
+  const matches = useMediaQuery("(min-width:600px)");
+
   const router = useRouter();
   const formik = useFormik({
     initialValues: {
@@ -90,40 +104,37 @@ const SignIn = () => {
       password: "",
     },
     validationSchema: Yup.object({
-      name: Yup.string()
-        .max(255)
-        .required("name is required"),
-      password: Yup.string()
-        .required("Password is required"),
+      name: Yup.string().max(40).required("Name is required"),
+      password: Yup.string().required("Password is required"),
     }),
-    onSubmit: values => {
+    onSubmit: (values) => {
       console.log(values);
       sendLogin(values, () => settingError("Invalid login"));
     },
   });
 
   const settingError = (msg) => {
-    setError(msg)
+    setError(msg);
     setTimeout(() => {
-        setError(undefined)
+      setError(undefined);
     }, 5000);
-  }
+  };
 
   const sendLogin = (values, errHandler) => {
-    console.log(values)
+    console.log(values);
     axios
       .get("http://localhost:8080/authentication/login", {
         //Test if the connection is established correctly
         headers: {
           "Access-Control-Allow-Origin": "*",
         },
-        params: { username: values.name, password: values.password }
+        params: { username: values.name, password: values.password },
       })
       .then((data) => {
-        console.log(data.data.data)
-        console.log(data.data.data.result)
+        console.log(data.data.data);
+        console.log(data.data.data.result);
         if (data.data.data.result === false) {
-          errHandler()
+          errHandler();
           return;
         }
 
@@ -133,11 +144,10 @@ const SignIn = () => {
         setState(true);
       })
       .catch((e) => errHandler());
-  }
-
+  };
 
   if (state === true) {
-    return <Navigate to="/portfolio"></Navigate>
+    return <Navigate to="/portfolio"></Navigate>;
   }
 
   return (
@@ -169,19 +179,17 @@ const SignIn = () => {
                     letterSpacing: ".3rem",
                     color: "inherit",
                     textDecoration: "none",
-                    marginLeft: "160px"
+                    marginLeft: "160px",
                   }}
                 >
                   Cryptonita
                 </Typography>
               </Box>
               <CssTextField
-                error={Boolean(
-                  formik.touched.name && formik.errors.name
-                )}
+                error={Boolean(formik.touched.name && formik.errors.name)}
                 fullWidth
                 helperText={formik.touched.name && formik.errors.name}
-                label="name"
+                label="Name"
                 margin="normal"
                 name="name"
                 onBlur={formik.handleBlur}
@@ -210,14 +218,13 @@ const SignIn = () => {
                   display: "flex",
                   ml: -1,
                 }}
-              >
-              </Box>
+              ></Box>
               {Boolean(formik.touched.policy && formik.errors.policy) && (
                 <FormHelperText error>{formik.errors.policy}</FormHelperText>
               )}
-              {error === undefined ? null :
-              <FormHelperText error>Invalid login</FormHelperText>
-              }
+              {error === undefined ? null : (
+                <FormHelperText error>Invalid login</FormHelperText>
+              )}
               <Box sx={{ py: 2 }}>
                 <Button
                   color="primary"
@@ -246,279 +253,11 @@ const SignIn = () => {
           </Container>
         </Box>
       </ThemeProvider>
+      <div className="footerLogin">
+        <Footer></Footer>
+      </div>
     </>
   );
 };
 
 export default SignIn;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/* eslint-disable */
-
-/** 
-import * as React from "react";
-import "antd/dist/antd.css";
-import Button from "@mui/material/Button";
-import CssBaseline from "@mui/material/CssBaseline";
-import TextField from "@mui/material/TextField";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Checkbox from "@mui/material/Checkbox";
-import Link from "@mui/material/Link";
-import Grid from "@mui/material/Grid";
-import Box from "@mui/material/Box";
-import Typography from "@mui/material/Typography";
-import Container from "@mui/material/Container";
-import { alpha, styled } from "@mui/material/styles";
-import axios from "axios";
-import { Link as Link2 } from "react-router-dom";
-import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
-
-import {
-  createTheme,
-  ThemeProvider,
-  experimental_sx as sx,
-} from "@mui/material/styles";
-
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="white" align="center" {...props}>
-      {"Copyright © "}
-      <Link color="inherit" href="https://mui.com/">
-        Cryptonita
-      </Link>{" "}
-      {new Date().getFullYear()}
-      {"."}
-    </Typography>
-  );
-}
-const CssTextField = styled(TextField)({
-  "& label.Mui-focused": {
-    color: "primary",
-  },
-  "& .MuiInput-underline:after": {
-    borderBottomColor: "primary",
-  },
-  "& .MuiOutlinedInput-root": {
-    "&:hover fieldset": {
-      borderColor: "#2196f3",
-    },
-  },
-});
-
-const theme = createTheme({
-  components: {
-    // Name of the component
-    MuiInputBase: {
-      styleOverrides: {
-        input: sx({
-          borderColor: "white",
-          color: "white",
-        }),
-      },
-    },
-
-    MuiOutlinedInput: {
-      styleOverrides: {
-        notchedOutline: sx({
-          borderColor: "white",
-        }),
-      },
-    },
-
-    MuiInputLabel: {
-      styleOverrides: {
-        root: sx({
-          color: "white",
-        }),
-      },
-    },
-    MuiCheckbox: {
-      styleOverrides: {
-        root: sx({
-          color: "white",
-        }),
-      },
-    },
-  },
-});
-**/
-/** 
-export default function SignIn() {
-  const [password, setPassword] = React.useState("");
-  const [leyenda, setLeyenda] = React.useState("");
-  const [errorpassword, setErrorPassword] = React.useState(false);
-
-  const [status, setStatus] = useState([false]);
-
-  const handleSubmit = (event) => {
-    event.preventDefault();
-
-    let email = document.getElementById("email").value;
-    let password = document.getElementById("password").value;
-
-    axios
-      .get("http://localhost:8080/authentication/login?username=" + email + "&password=" + password, {
-        //Test if the connection is established correctly
-        headers: {
-          "Access-Control-Allow-Origin": "*",
-        },
-      })
-      .then((data) => {
-        console.log(data.data.data)
-        console.log(data.data.data.result)
-        if (data.data.data.result === false) return;
-
-        sessionStorage.setItem("username", email);
-        sessionStorage.setItem("password", password);
-        console.log("successfully");
-        setStatus(true);
-      })
-      .catch((e) => console.log(e));
-  };
-
-  if (sessionStorage.getItem("username") !== null) {  // Already logger in
-    return <Navigate to="/Portfolio"></Navigate>
-}
-
-  if (status === true) return <Navigate to="/" />;
-
-  return (
-    <ThemeProvider theme={theme}>
-      <Container component="main" maxWidth="xs">
-        <CssBaseline />
-        <Box
-          sx={{
-            marginTop: 8,
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-          }}
-        >
-          <Typography
-            variant="h3"
-            fontFamily="Digitalism"
-            noWrap
-            component="a"
-            href="/"
-            sx={{
-              flexGrow: 1,
-              display: { xs: "none", md: "flex" },
-              fontWeight: 700,
-              letterSpacing: ".3rem",
-              color: "inherit",
-              textDecoration: "none",
-            }}
-          >
-            Cryptonita
-          </Typography>
-
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            noValidate
-            sx={{ mt: 1 }}
-          >
-            <CssTextField
-              margin="normal"
-              required
-              fullWidth
-              id="email"
-              label="Email"
-              name="email"
-              type="email"
-              autoComplete="email"
-              autoFocus
-              sx={{
-                color: "white",
-              }}
-            />
-            <CssTextField
-              error={errorpassword}
-              helperText={leyenda}
-              margin="normal"
-              required
-              fullWidth
-              name="password"
-              label="Contraseña"
-              type="password"
-              id="password"
-              autoComplete="current-password"
-            />
-            <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
-              label="Recordarme"
-            />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              sx={{ mt: 3, mb: 2 }}
-            >
-              Continuar
-            </Button>
-            <Grid container>
-              <Grid item xs>
-                <Link href="Retrieve" variant="body2">
-                  Olvidó la contraseña?
-                </Link>
-              </Grid>
-              <Grid item>
-                <Link href="/Register" variant="body2">
-                  {"No tienes una cuenta? Registrarse"}
-                </Link>
-              </Grid>
-            </Grid>
-          </Box>
-        </Box>
-        <Copyright sx={{ mt: 8, mb: 4 }} />
-      </Container>
-    </ThemeProvider>
-  );
-} **/

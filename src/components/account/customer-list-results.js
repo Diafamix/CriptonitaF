@@ -1,204 +1,224 @@
+import styled from "styled-components";
+import React from "react";
+import Pagination from "@mui/material/Pagination";
+import Stack from "@mui/material/Stack";
 import { useState, useEffect } from "react";
-import PerfectScrollbar from "react-perfect-scrollbar";
-import PropTypes from "prop-types";
-import { format } from "date-fns";
-import axios from "axios";
-import {
-  Avatar,
-  Box,
-  Card,
-  Checkbox,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TablePagination,
-  TableRow,
-  Typography,
-} from "@mui/material";
-import { getInitials } from "../utils/get-initials";
+import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { blue, red } from "@mui/material/colors";
+import Button from "@mui/material/Button";
+import LinearProgress from "@mui/material/LinearProgress";
+import Box from "@mui/material/Box";
+import { Navigate } from "react-router-dom";
+import Coin from "../coinList/Coin";
 
-export const CustomerListResults = ({ customers, ...rest }) => {
-  const [selectedCustomerIds, setSelectedCustomerIds] = useState([]);
-  const [limit, setLimit] = useState(10);
-  const [page, setPage] = useState(0);
-  const [historial, setHistorial] = useState(undefined);
+const limitPage = 8;
+
+const theme = createTheme({
+  components: {
+    // Name of the component
+    MuiPaginationItem: {
+      styleOverrides: {
+        // Name of the slot
+        root: {
+          // Some CSS
+          color: "#fff",
+        },
+      },
+    },
+  },
+  palette: {
+    primary: {
+      main: blue[500],
+      contrastText: "#fff",
+    },
+    secondary: {
+      main: red[500],
+      contrastText: "#fff",
+    },
+  },
+});
+
+const CustomerListResults = ({ coins }) => {
+  const [status, setStatus] = useState([]);
+  const [items, setItems] = useState(null);
+  const [page, setPage] = React.useState(1);
+  const [click, setClicked] = useState(null);
+
+  let totalSize = coins.length;
+  let totalPages = Math.ceil(totalSize / limitPage);
+  let currentPage = 0;
 
   useEffect(() => {
-    getHistorial();
-  }, []);
+    console.log(coins);
+    setItems(coins.slice(0, limitPage));
+  }, [coins]);
 
-  const getHistorial = () => {
-    axios
-      .get(
-        "http://localhost:8080/api/history?start=10-08-2022&end=30-12-2022",
-        {
-          headers: { "Access-Control-Allow-Origin": "*" },
-          auth: {
-            username: sessionStorage.getItem("username"),
-            password: sessionStorage.getItem("password"),
-          },
-        }
+  const handlePageClick = async (event, value) => {
+    console.log(value);
+    currentPage = value - 1;
+    setPage(value);
+
+    setItems(
+      coins.slice(
+        currentPage * limitPage,
+        Math.min(currentPage * limitPage + limitPage),
+        totalSize
       )
-      .then((data) => {
-        console.log(data.data);
-        setHistorial(data.data.data);
-      })
-      .catch((e) => console.log(e));
+    );
   };
 
-  const handleSelectAll = (event) => {
-    let newSelectedCustomerIds;
-
-    if (event.target.checked) {
-      newSelectedCustomerIds = customers.map((customer) => customer.id);
-    } else {
-      newSelectedCustomerIds = [];
-    }
-
-    setSelectedCustomerIds(newSelectedCustomerIds);
-  };
-
-  const handleSelectOne = (event, id) => {
-    const selectedIndex = selectedCustomerIds.indexOf(id);
-    let newSelectedCustomerIds = [];
-
-    if (selectedIndex === -1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(
-        selectedCustomerIds,
-        id
-      );
-    } else if (selectedIndex === 0) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(
-        selectedCustomerIds.slice(1)
-      );
-    } else if (selectedIndex === selectedCustomerIds.length - 1) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(
-        selectedCustomerIds.slice(0, -1)
-      );
-    } else if (selectedIndex > 0) {
-      newSelectedCustomerIds = newSelectedCustomerIds.concat(
-        selectedCustomerIds.slice(0, selectedIndex),
-        selectedCustomerIds.slice(selectedIndex + 1)
-      );
-    }
-
-    setSelectedCustomerIds(newSelectedCustomerIds);
-  };
-
-  const handleLimitChange = (event) => {
-    setLimit(event.target.value);
-  };
-
-  const handlePageChange = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  if (historial === undefined) return null;
+  if (click) {
+    return <Navigate to={"/coinInfo/" + click.id}></Navigate>;
+  }
 
   return (
-    <Card {...rest}>
-      <PerfectScrollbar>
-        <Box sx={{ minWidth: 1050 }}>
-          <Table sx={{ backgroundColor: "#2196f3" }}>
-            <TableHead>
+    <Wrapper>
+      <Content>
+        <PortfolioTable>
+          <Divider />
+          <Table className="table-dark mt-4 table-hover">
+            <TableItem>
               <TableRow>
-                <TableCell padding="checkbox">
-                  <Checkbox
-                    checked={selectedCustomerIds.length === customers.length}
-                    color="primary"
-                    indeterminate={
-                      selectedCustomerIds.length > 0 &&
-                      selectedCustomerIds.length < customers.length
-                    }
-                    onChange={handleSelectAll}
-                  />
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold", color: "white" }}>
-                  Name
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold", color: "white" }}>
-                  Origin
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold", color: "white" }}>
-                  Destiny
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold", color: "white" }}>
-                  Quantity
-                </TableCell>
-                <TableCell sx={{ fontWeight: "bold", color: "white" }}>
-                  Registration date
-                </TableCell>
+                <div style={{ flex: 2 }}>Name</div>
+                <div style={{ flex: 2 }}>Price</div>
+                <div style={{ flex: 2 }}>Cap.Market</div>
+                <div style={{ flex: 2 }}>Last 7 days</div>
+                <div style={{ flex: 0, color: "#0a0b0d" }}></div>
               </TableRow>
-            </TableHead>
-            <TableBody sx={{ backgroundColor: "#121212" }}>
-              {historial.slice(0, limit).map((customer) => (
-                <TableRow
-                  hover
-                  key={customer.user.name}
-                  selected={
-                    selectedCustomerIds.indexOf(customer.user.name) !== -1
-                  }
-                >
-                  <TableCell padding="checkbox">
-                    <Checkbox
-                      checked={
-                        selectedCustomerIds.indexOf(customer.user.name) !== -1
-                      }
-                      onChange={(event) =>
-                        handleSelectOne(event, customer.user.name)
-                      }
-                      value="true"
-                    />
-                  </TableCell>
-                  <TableCell>
-                    <Box
-                      sx={{
-                        alignItems: "center",
-                        display: "flex",
-                      }}
-                    >
-                      <Avatar src={customer.user.name} sx={{ mr: 2 }}>
-                        {getInitials(customer.user.name)}
-                      </Avatar>
-                      <Typography color="white" variant="body1">
-                        {customer.user.username}
-                      </Typography>
-                    </Box>
-                  </TableCell>
-                  <TableCell sx={{ color: "white" }}>
-                    {customer.origin}
-                  </TableCell>
-                  <TableCell sx={{ color: "white" }}>
-                    {customer.destiny}
-                  </TableCell>
-                  <TableCell sx={{ color: "white" }}>
-                    {customer.quantity}
-                  </TableCell>
-                  <TableCell sx={{ color: "white" }}>{customer.date}</TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
+            </TableItem>
+            <Divider />
+            <div>
+              {totalSize === 0 ? (
+                <Box sx={{ width: "100%" }}>
+                  <LinearProgress />
+                </Box>
+              ) : (
+                items.map((coin) => (
+                  <div key={coin.id} onClick={() => setClicked(coin)}>
+                    <Coin coin={coin} />
+                    <Divider />
+                  </div>
+                ))
+              )}
+            </div>
           </Table>
-        </Box>
-      </PerfectScrollbar>
-      <TablePagination
-        component="div"
-        count={customers.length}
-        onPageChange={handlePageChange}
-        onRowsPerPageChange={handleLimitChange}
-        page={page}
-        rowsPerPage={limit}
-        rowsPerPageOptions={[5, 10, 25]}
-        sx={{
-          color: "white",
-          backgroundColor: "#2196f3",
-        }}
-      />
-    </Card>
+        </PortfolioTable>
+        <Stack spacing={2}>
+          <ThemeProvider theme={theme}>
+            <Pagination
+              className="paginationcripto"
+              color="primary"
+              variant="outlined"
+              count={totalPages}
+              page={page}
+              onChange={handlePageClick}
+              showFirstButton
+              showLastButton
+              sx={{
+                justifyContent: "center",
+                flexGrow: 1,
+                display: { xs: "none", md: "flex" },
+                marginTop: 4,
+              }}
+            />
+          </ThemeProvider>
+        </Stack>
+      </Content>
+    </Wrapper>
   );
 };
 
-CustomerListResults.propTypes = {
-  customers: PropTypes.array.isRequired,
-};
+export default CustomerListResults;
+
+const Wrapper = styled.div`
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  height: 100%;
+`;
+const Content = styled.div`
+  width: 100%;
+  max-width: 1000px;
+  padding: 2rem 1rem;
+`;
+
+const Balance = styled.div``;
+
+const BalanceTitle = styled.div`
+  color: #8a919e;
+  font-size: 0.9rem;
+`;
+
+const BalanceValue = styled.div`
+  font-size: 1.8rem;
+  font-weight: 700;
+  margin: 0.5rem 0;
+`;
+
+const PortfolioTable = styled.div`
+  margin-top: 1rem;
+  border: 1px solid #282b2f;
+`;
+
+const Table = styled.div`
+  width: 100%;
+`;
+
+const TableRow = styled.div`
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  & > th {
+    text-align: left;
+  }
+`;
+
+const TableItem = styled.div`
+  padding: 1rem 2rem;
+`;
+
+const Divider = styled.div`
+  border-bottom: 1px solid #282b2f;
+`;
+
+const Title = styled.div`
+  font-size: 1.5rem;
+  font-weight: 600;
+`;
+
+const color = red[500];
+const BootstrapButton = styled(Button)({
+  boxShadow: "none",
+  textTransform: "none",
+  fontSize: 16,
+  padding: "6px 12px",
+  border: "1px solid",
+  lineHeight: 1.5,
+  backgroundColor: "#0063cc",
+  borderColor: "#0063cc",
+  fontFamily: [
+    "-apple-system",
+    "BlinkMacSystemFont",
+    '"Segoe UI"',
+    "Roboto",
+    '"Helvetica Neue"',
+    "Arial",
+    "sans-serif",
+    '"Apple Color Emoji"',
+    '"Segoe UI Emoji"',
+    '"Segoe UI Symbol"',
+  ].join(","),
+  "&:hover": {
+    backgroundColor: "#0069d9",
+    borderColor: "#0062cc",
+    boxShadow: "none",
+  },
+  "&:active": {
+    boxShadow: "none",
+    backgroundColor: "#0062cc",
+    borderColor: "#005cbf",
+  },
+  "&:focus": {
+    boxShadow: "0 0 0 0.2rem rgba(0,123,255,.5)",
+  },
+});
